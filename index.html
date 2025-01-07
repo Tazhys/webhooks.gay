@@ -136,7 +136,7 @@
 
         // Basic Discord Webhook URL validation
         const discordWebhookRegex =
-          /^https:\/\/discord\.com\/api\/webhooks\/\d+\/[\w-]+$/;
+          /^https:\/\/(canary\.|ptb\.)?discord\.com\/api\/webhooks\/\d+\/[\w-]+$/;
         if (!discordWebhookRegex.test(webhookUrl)) {
           showToast("Invalid Discord Webhook URL.", true);
           return;
