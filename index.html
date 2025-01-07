@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Easily delete Discord webhooks with our simple tool. Enter the webhook URL and remove it instantly!"
+    />
+    <meta
+      name="keywords"
+      content="Discord webhook, delete webhook, webhook remover, Discord tools"
+    />
+    <meta name="author" content="Tazhys" />
+    <meta property="og:title" content="Delete Discord Webhook - webhooks.gay" />
+    <meta
+      property="og:description"
+      content="Quickly delete Discord webhooks using this easy-to-use tool. Just paste the URL and remove the webhook instantly."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://webhooks.gay/" />
+    <meta property="og:image" content="https://webhooks.gay/wgay.png" />
+    <meta name="robots" content="index, follow" />
+    <title>Delete Discord Webhook - webhooks.gay</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.3/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Custom Toast Notification Animation */
+      @keyframes fadeInOut {
+        0% {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        10%,
+        90% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+      }
+      .toast {
+        animation: fadeInOut 3s ease;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-900 text-white min-h-screen flex items-center justify-center"
+  >
+    <main
+      class="relative w-full max-w-lg p-6 bg-gray-800 rounded-xl shadow-lg border border-purple-700"
+    >
+      <!-- Main Heading -->
+      <header class="text-center">
+        <h1 class="text-4xl font-extrabold text-purple-500 mb-4">
+          webhooks.gay
+        </h1>
+        <p class="text-gray-400 text-sm">
+          Use this tool to remove Discord webhooks easily and efficiently.
+        </p>
+      </header>
+
+      <!-- Toast Notification -->
+      <div
+        id="toast"
+        class="hidden fixed top-5 right-5 bg-purple-600 text-white py-2 px-4 rounded-lg shadow-lg text-sm z-50"
+        role="alert"
+        aria-live="polite"
+      >
+        <span id="toastMessage"></span>
+      </div>
+
+      <!-- Input Field -->
+      <section class="mt-6">
+        <label
+          for="webhookUrl"
+          class="block text-gray-300 text-sm font-medium mb-2"
+          >Discord Webhook URL</label
+        >
+        <input
+          id="webhookUrl"
+          type="url"
+          placeholder="Enter Discord Webhook URL"
+          class="w-full px-4 py-3 bg-gray-700 border border-purple-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          required
+        />
+      </section>
+
+      <!-- Delete Button -->
+      <button
+        id="deleteButton"
+        class="w-full mt-6 px-4 py-3 bg-purple-600 text-white font-semibold text-lg rounded-lg shadow hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+        aria-label="Delete Webhook"
+      >
+        Delete Webhook
+      </button>
+
+      <!-- Footer -->
+      <footer class="text-center mt-6 text-sm text-gray-500">
+        Built with 💜 by
+        <a href="https://builtbytaz.com" class="text-purple-400 hover:underline"
+          >Tazhys</a
+        >
+      </footer>
+    </main>
+
+    <script>
+      const deleteButton = document.getElementById("deleteButton");
+      const webhookInput = document.getElementById("webhookUrl");
+      const toast = document.getElementById("toast");
+      const toastMessage = document.getElementById("toastMessage");
+
+      // Function to display toast notifications
+      function showToast(message, isError = false) {
+        toastMessage.textContent = message;
+        toast.classList.remove("hidden", "bg-purple-600", "bg-red-600");
+        toast.classList.add(isError ? "bg-red-600" : "bg-purple-600", "toast");
+
+        setTimeout(() => {
+          toast.classList.add("hidden");
+        }, 3000);
+      }
+
+      // Delete webhook function
+      async function deleteWebhook() {
+        const webhookUrl = webhookInput.value.trim();
+
+        if (!webhookUrl) {
+          showToast("Please enter a webhook URL.", true);
+          return;
+        }
+
+        // Basic Discord Webhook URL validation
+        const discordWebhookRegex =
+          /^https:\/\/discord\.com\/api\/webhooks\/\d+\/[\w-]+$/;
+        if (!discordWebhookRegex.test(webhookUrl)) {
+          showToast("Invalid Discord Webhook URL.", true);
+          return;
+        }
+
+        try {
+          const response = await fetch(webhookUrl, { method: "DELETE" });
+          if (response.ok) {
+            showToast("Webhook deleted successfully!");
+            webhookInput.value = "";
+          } else {
+            const error = await response.json();
+            showToast(error.message || "Failed to delete webhook.", true);
+          }
+        } catch (error) {
+          showToast(`Error: ${error.message}`, true);
+        }
+      }
+
+      // Event listener for the delete button
+      deleteButton.addEventListener("click", deleteWebhook);
+
+      // Allow pressing "Enter" to trigger webhook deletion
+      webhookInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+          deleteWebhook();
+        }
+      });
+    </script>
+  </body>
+</html>
